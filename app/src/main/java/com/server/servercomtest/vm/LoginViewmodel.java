@@ -1,13 +1,18 @@
 package com.server.servercomtest.vm;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.view.menu.MenuView;
+import android.util.JsonWriter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -19,17 +24,23 @@ import com.server.servercomtest.Data.UserData;
 import com.server.servercomtest.R;
 import com.server.servercomtest.databinding.AcountDialogBinding;
 import com.server.servercomtest.databinding.LoginActivityBinding;
+import com.server.servercomtest.servernetwork.CreateAcount;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class LoginViewmodel  extends ViewModel {
     String login="";
     Context con;
     LoginActivityBinding binding;
-    //CreateAcount ca;
+    CreateAcount ca;
     public LoginViewmodel(Context ctx, LoginActivityBinding b){
         con=ctx;
         binding=b;
-        //ca=new CreateAcount();
+        ca=new CreateAcount();
     }
 
  public void onclick(View v){
@@ -42,7 +53,7 @@ public class LoginViewmodel  extends ViewModel {
             break;
     }
  }
-
+    JSONObject users=null;
  public void acountdialog(final Context ctx){
      android.support.v7.app.AlertDialog.Builder dialogBuilder = new android.support.v7.app.AlertDialog.Builder(ctx);
      LayoutInflater inflater = ((Activity)ctx).getLayoutInflater();
@@ -91,8 +102,27 @@ public class LoginViewmodel  extends ViewModel {
                  return;
              }
             // create_acount(email, password, nickname, phonenum, alertDialog);
-             UserData ud = new UserData(id,password,realname,email,phonenum);
-            // ca.signup(con,ud);
+            final UserData ud = new UserData(id,password,realname,email,phonenum);
+             Map<String, Object> user = new HashMap<>();
+             user.put("username", ud.getUsername()); // 아이디
+             user.put("password", ud.getPassword()); // 암호
+             user.put("realname", ud.getRealname()); // 실명
+             user.put("email", ud.getEmail()); // 이메일
+             user.put("mobile", ud.getMobile()); // 휴대폰번호
+
+              users = new JSONObject();
+             try {
+                 for (Map.Entry<String, Object> entry : user.entrySet()) {
+                     String key = entry.getKey();
+                     Object value = entry.getValue();
+                     users.put(key, value);
+                 }
+             }catch (Exception e){
+
+             }
+
+             new LoginTask().execute();
+
              alertDialog.dismiss();
 
          }
@@ -105,4 +135,60 @@ public class LoginViewmodel  extends ViewModel {
      });
      alertDialog.show();
  }
+ Handler h = new Handler();
+    public class LoginTask extends AsyncTask<Integer, Integer, Boolean> {
+        ProgressDialog asyncDialog = new ProgressDialog(con);
+        String email = null;
+        String password = null;
+        boolean result = false;
+
+        public LoginTask() {
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            asyncDialog.setMessage("계정생 중 입니다...");
+            asyncDialog.setCancelable(false);
+            asyncDialog.show();
+
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... integers) {
+
+            try {
+                String token = ca.getToken("hidayz", "hidayz");
+
+                ca.signup(token,users);
+            }catch (Exception e){
+                Log.e("e",e.getMessage().toString());
+            //    Toast.makeText(con,e.getMessage().toString(),Toast.LENGTH_LONG).show();
+            }
+            try {
+            //    Thread.sleep(1000);
+            } catch (Exception e) {
+
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+//           super.onPostExecute(aBoolean);
+
+            asyncDialog.dismiss();
+
+
+//           asyncDialog.dismiss();
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+        }
+    }
+
 }

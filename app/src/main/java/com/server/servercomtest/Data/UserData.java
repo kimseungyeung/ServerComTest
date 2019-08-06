@@ -12,11 +12,11 @@ public class UserData {
     String email;
     String mobile;
     public UserData(String uname,String pw,String rname,String em,String p){
-        this.email=em;
+        this.username=uname;
         this.password=pw;
         this.realname=rname;
         this.email=em;
-        this.password=p;
+        this.mobile=p;
 
     }
     public UserData(){
