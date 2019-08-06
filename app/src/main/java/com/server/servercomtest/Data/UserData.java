@@ -6,15 +6,17 @@ import lombok.Data;
 
 @Data
 public class UserData {
-    Bitmap profileimage;
-    String nickname;
+    String username;
+    String password;
+    String realname;
     String email;
-    String phonenum;
-    public UserData(Bitmap i, String em, String nick,String phone){
-        this.profileimage=i;
+    String mobile;
+    public UserData(String uname,String pw,String rname,String em,String p){
         this.email=em;
-        this.nickname=nick;
-        this.phonenum=phone;
+        this.password=pw;
+        this.realname=rname;
+        this.email=em;
+        this.password=p;
 
     }
     public UserData(){
