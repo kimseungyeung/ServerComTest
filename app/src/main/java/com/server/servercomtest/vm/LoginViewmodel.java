@@ -15,17 +15,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.server.servercomtest.Data.UserData;
 import com.server.servercomtest.R;
 import com.server.servercomtest.databinding.AcountDialogBinding;
 import com.server.servercomtest.databinding.LoginActivityBinding;
+
 
 public class LoginViewmodel  extends ViewModel {
     String login="";
     Context con;
     LoginActivityBinding binding;
+    //CreateAcount ca;
     public LoginViewmodel(Context ctx, LoginActivityBinding b){
         con=ctx;
         binding=b;
+        //ca=new CreateAcount();
     }
 
  public void onclick(View v){
@@ -56,14 +60,29 @@ public class LoginViewmodel  extends ViewModel {
          @Override
          public void onClick(View v) {
 
-             String email = acountbinding.edtCreateEmail.getText().toString().trim();
+            String id=acountbinding.edtCreateId.getText().toString().trim();
              String password = acountbinding.edtCreatePassword.getText().toString().trim();
+             String realname = acountbinding.edtCreateRealname.getText().toString().trim();
+             String email = acountbinding.edtCreateEmail.getText().toString().trim();
              String phonenum = acountbinding.edtCreatePhonenum.getText().toString().trim();
-             String nickname = acountbinding.edtCreateNickname.getText().toString().trim();
-             if (email.equals("")) {
+
+             if (id.equals("")) {
 
                  return;
-             } else if (password.equals("")) {
+             } if (password.equals("")) {
+                 Toast.makeText(ctx,ctx.getString(R.string.insert_password),Toast.LENGTH_LONG).show();
+                 return;
+             }if (password.equals("")) {
+                 Toast.makeText(ctx,ctx.getString(R.string.insert_password),Toast.LENGTH_LONG).show();
+                 return;
+             }if (realname.equals("")) {
+                 Toast.makeText(ctx,ctx.getString(R.string.insert_password),Toast.LENGTH_LONG).show();
+                 return;
+             } if (email.equals("")) {
+                 Toast.makeText(ctx,ctx.getString(R.string.insert_password),Toast.LENGTH_LONG).show();
+                 return;
+             }
+             if (phonenum.equals("")) {
                  Toast.makeText(ctx,ctx.getString(R.string.insert_password),Toast.LENGTH_LONG).show();
                  return;
              }
@@ -72,6 +91,8 @@ public class LoginViewmodel  extends ViewModel {
                  return;
              }
             // create_acount(email, password, nickname, phonenum, alertDialog);
+             UserData ud = new UserData(id,password,realname,email,phonenum);
+            // ca.signup(con,ud);
              alertDialog.dismiss();
 
          }

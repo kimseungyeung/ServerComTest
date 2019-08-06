@@ -16,6 +16,55 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <TextView
+                android:layout_width="100dip"
+                android:layout_height="wrap_content"
+                android:text="id"/>
+            <EditText
+                android:id="@+id/edt_create_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <TextView
+                android:layout_width="100dip"
+                android:layout_height="wrap_content"
+                android:text="password"/>
+            <EditText
+                android:id="@+id/edt_create_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:singleLine="true"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="100dip"
+                android:layout_height="wrap_content"
+                android:text="이름"/>
+            <EditText
+                android:id="@+id/edt_create_realname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal">
             <TextView
@@ -36,41 +85,8 @@
             <TextView
                 android:layout_width="100dip"
                 android:layout_height="wrap_content"
-                android:text="password"/>
-            <EditText
-                android:id="@+id/edt_create_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:singleLine="true"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
-            <TextView
-                android:layout_width="100dip"
-                android:layout_height="wrap_content"
-                android:text="닉네임"/>
-            <EditText
-                android:id="@+id/edt_create_nickname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
-            <TextView
-                android:layout_width="100dip"
-                android:layout_height="wrap_content"
-                android:text="전화번호"/>
-            <EditText
+                android:text="핸드폰"/>
+           <EditText
                 android:id="@+id/edt_create_phonenum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
