@@ -8,6 +8,7 @@
             name="main"
             type="com.server.servercomtest.vm.MainViewModel" />
     </data>
+
 <android.support.v4.widget.DrawerLayout
     android:id="@+id/drawer_left"
     android:layout_width="match_parent"

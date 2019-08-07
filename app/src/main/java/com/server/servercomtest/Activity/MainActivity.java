@@ -1,15 +1,18 @@
 package com.server.servercomtest.Activity;
 
 import android.app.LocalActivityManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.media.Image;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,21 +22,38 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.server.servercomtest.Constants;
+import com.server.servercomtest.Data.UserData;
+import com.server.servercomtest.Network.FireStoreNetwork;
 import com.server.servercomtest.R;
 import com.server.servercomtest.databinding.ActivityMainBinding;
 import com.server.servercomtest.vm.MainViewModel;
 
+import javax.annotation.Nullable;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     ActivityMainBinding binding;
     Context con;
+    FireStoreNetwork fn;
+    String email;
+    String phone;
+    String realname;
+    String username;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        component(savedInstanceState);
+        this.fn= Constants.loginfn;
+        con=this;
+       new LoadingTask(savedInstanceState).execute();
     }
 
-    public void component(Bundle bundle) {
+    public void component(Bundle bundle, UserData ud) {
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setMain(new MainViewModel(this, binding));
         binding.toolbar.setTitle("");
@@ -49,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         LocalActivityManager mLocalActivityManager = new LocalActivityManager(this, false);
        mLocalActivityManager.dispatchCreate(bundle);
         tabHost.setup(mLocalActivityManager);
-        con=this;
+
         /** 새로운 탭을 추가하기 위한 TabSpect */
         TabHost.TabSpec TabSpec = tabHost.newTabSpec("tid1");
         TabHost.TabSpec Tab2Spec = tabHost.newTabSpec("tid2");
@@ -68,8 +88,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent ii= new Intent(getApplicationContext(),
                 Tab3Activity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        TabSpec.setContent(new Intent(this, new Tab1Activity().getClass()));
+       Intent in1= new Intent(this, new Tab1Activity().getClass());
+       in1.putExtra("data",ud);
+        TabSpec.setContent(in1);
         Tab2Spec.setIndicator(bv2);
         Tab2Spec.setContent(new Intent(this, new Tab2Activity().getClass()));
         Tab3Spec.setIndicator(bv3);
@@ -132,5 +153,62 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         binding.drawerLeft.openDrawer(GravityCompat.START);
         return false;
+    }
+
+    public void setnetwork(FireStoreNetwork f){
+        this.fn=f;
+    }
+    public class LoadingTask extends AsyncTask<Integer, Integer, Boolean> {
+        ProgressDialog asyncDialog = new ProgressDialog(con);
+       Bundle bundle;
+
+        boolean result = false;
+
+        public LoadingTask(Bundle b) {
+            this.bundle=b;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            asyncDialog.setMessage("로딩 중 입니다...");
+            asyncDialog.setCancelable(false);
+            asyncDialog.show();
+
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... integers) {
+            DocumentReference docRef2 = fn.getDb().collection("userlist").document(fn.getmAuth().getCurrentUser().getUid());
+            docRef2.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                    email = documentSnapshot.get("email").toString();
+                    phone = documentSnapshot.get("phone").toString();
+                    realname = documentSnapshot.get("realname").toString();
+                    username = documentSnapshot.get("username").toString();
+                    UserData ud=new UserData(email,"",realname,email,phone);
+                    component(bundle,ud);
+                }
+            });
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+//           super.onPostExecute(aBoolean);
+
+            asyncDialog.dismiss();
+
+
+
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+        }
     }
 }
