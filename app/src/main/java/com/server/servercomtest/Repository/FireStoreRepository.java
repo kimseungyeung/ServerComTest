@@ -3,8 +3,7 @@ package com.server.servercomtest.Repository;
 import com.server.servercomtest.Data.UserData;
 import com.server.servercomtest.Interface.RepositoryService;
 
-public class ServerRepository implements RepositoryService {
-
+public class FireStoreRepository implements RepositoryService {
     @Override
     public UserData getdata() {
         return null;
@@ -19,6 +18,4 @@ public class ServerRepository implements RepositoryService {
     public void SetData(UserData sdl) {
 
     }
-
-
 }

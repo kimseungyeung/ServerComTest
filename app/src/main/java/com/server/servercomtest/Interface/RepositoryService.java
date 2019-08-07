@@ -4,7 +4,7 @@ import com.server.servercomtest.Data.UserData;
 
 import java.util.ArrayList;
 
-public interface Repository {
+public interface RepositoryService {
 
     public UserData getdata();
 
