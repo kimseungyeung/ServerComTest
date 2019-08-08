@@ -11,6 +11,7 @@ import android.view.View;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.server.servercomtest.Data.UserData;
 import com.server.servercomtest.R;
 import com.server.servercomtest.Repository.FireStoreRepository;
@@ -32,6 +33,7 @@ public class Tab1Activity extends AppCompatActivity implements View.OnClickListe
         binding.setTab1(tab1v);
         binding.tvTop.setText(ud.getUsername()+"님");
         binding.tvBottom.setText(ud.getRealname()+"님 어서오세요");
+      //  fr.ProfliePictureSet(this,ud.getEmail(),binding.ivMainImage);
         binding.ivMainImage.setOnClickListener(this);
 
 

@@ -1,10 +1,15 @@
 package com.server.servercomtest.Repository;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -31,6 +36,11 @@ public class FireStoreRepository implements RepositoryService {
     @Override
     public void SetData(UserData sdl) {
 
+    }
+    public void ProfliePictureSet(Context ctx,String eamil,ImageView v){
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference islandRef = storageRef.child("profilepicture/"+eamil+"/" + "test.jpg");
+        Glide.with(ctx).load(islandRef).apply(RequestOptions.circleCropTransform()).into(v);
     }
     //이미지 스토라지에 업로드
     public void pictureupload(String email, String imagename, Uri uip) {

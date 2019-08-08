@@ -16,7 +16,7 @@ public class Tab1ViewModel extends ViewModel {
         this.binding=t;
 
     }
-    public void setd(Uri uri){
+    public void settab1pimage(Uri uri){
         Glide.with(con).load(uri).apply(RequestOptions.circleCropTransform()).into(binding.ivMainImage);
     }
 }

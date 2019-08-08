@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // 탭의 선택
         tabHost.getTabWidget().setCurrentTab(0);
         //tabHost.setOnTabChangedListener(dd);
-
+      //  fr.ProfliePictureSet(con,ud.getEmail(),iv_profile);
     }
 
     @Override
@@ -235,10 +235,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
                 //data에서 절대경로로 이미지를 가져옴
                 Uri uri = data.getData();
-                fr.pictureupload(email,"test",uri);
+                fr.pictureupload(email,"test.jpg",uri);
                 Glide.with(this).load(uri).apply(RequestOptions.circleCropTransform()).into(iv_profile);
               Tab1Activity t1=  (Tab1Activity) mLocalActivityManager.getActivity("tid1");
-              t1.getBinding().getTab1().setd(uri);
+              t1.getBinding().getTab1().settab1pimage(uri);
             }
 
     }

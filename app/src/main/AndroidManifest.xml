@@ -25,7 +25,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activity.MainActivity"/>
-        <activity android:name=".Activity.Tab1Activity"/>
+        <activity android:name=".Activity.Tab1Activity"
+            android:launchMode="singleInstance"/>
         <activity android:name=".Activity.Tab2Activity"/>
         <activity android:name=".Activity.Tab3Activity"/>
         <activity android:name=".Activity.Tab4Activity"/>
