@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.media.Image;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -22,33 +23,48 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.server.servercomtest.Constants;
 import com.server.servercomtest.Data.UserData;
 import com.server.servercomtest.Network.FireStoreNetwork;
 import com.server.servercomtest.R;
+import com.server.servercomtest.Repository.FireStoreRepository;
 import com.server.servercomtest.databinding.ActivityMainBinding;
+import com.server.servercomtest.databinding.Tab1ActivityBinding;
 import com.server.servercomtest.vm.MainViewModel;
+import com.server.servercomtest.vm.Tab1ViewModel;
 
 import javax.annotation.Nullable;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     ActivityMainBinding binding;
     Context con;
-    FireStoreNetwork fn;
+
     String email;
     String phone;
     String realname;
     String username;
-
+    FirebaseFirestore db;
+    String uid;
+    FireStoreRepository fr;
+    ImageView iv_profile;
+    TabHost tabHost;
+    Tab1Activity t1;
+    LocalActivityManager mLocalActivityManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.fn= Constants.loginfn;
+        db=FirebaseFirestore.getInstance();
+        uid=getIntent().getStringExtra("uid");
         con=this;
+        fr=new FireStoreRepository();
        new LoadingTask(savedInstanceState).execute();
     }
 
@@ -61,12 +77,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_icon);
        View v=binding.navLeftMenu.getHeaderView(0);
-       ImageView iv=(ImageView)v.findViewById(R.id.iv_profile_picture);
-       iv.setBackground(getDrawable(R.drawable.menu_icon));
+       iv_profile=(ImageView)v.findViewById(R.id.iv_profile_picture);
+       //iv_profile.setBackground(getDrawable(R.drawable.menu_icon));
         binding.navLeftMenu.setNavigationItemSelectedListener(this);
-        TabHost tabHost =binding.tabhost;
+        tabHost =binding.tabhost;
        final Intent i=   new Intent(this, new Tab3Activity().getClass());
-        LocalActivityManager mLocalActivityManager = new LocalActivityManager(this, false);
+        mLocalActivityManager = new LocalActivityManager(this, false);
        mLocalActivityManager.dispatchCreate(bundle);
         tabHost.setup(mLocalActivityManager);
 
@@ -88,7 +104,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent ii= new Intent(getApplicationContext(),
                 Tab3Activity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-       Intent in1= new Intent(this, new Tab1Activity().getClass());
+         t1= new Tab1Activity();
+       Intent in1= new Intent(this,t1.getClass());
        in1.putExtra("data",ud);
         TabSpec.setContent(in1);
         Tab2Spec.setIndicator(bv2);
@@ -155,9 +172,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return false;
     }
 
-    public void setnetwork(FireStoreNetwork f){
-        this.fn=f;
-    }
+
     public class LoadingTask extends AsyncTask<Integer, Integer, Boolean> {
         ProgressDialog asyncDialog = new ProgressDialog(con);
        Bundle bundle;
@@ -180,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         protected Boolean doInBackground(Integer... integers) {
-            DocumentReference docRef2 = fn.getDb().collection("userlist").document(fn.getmAuth().getCurrentUser().getUid());
+            DocumentReference docRef2 = db.collection("userlist").document(uid);
             docRef2.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
@@ -210,5 +225,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @android.support.annotation.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+            //이미지를 하나 골랐을때
+            if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
+                //data에서 절대경로로 이미지를 가져옴
+                Uri uri = data.getData();
+                fr.pictureupload(email,"test",uri);
+                Glide.with(this).load(uri).apply(RequestOptions.circleCropTransform()).into(iv_profile);
+              Tab1Activity t1=  (Tab1Activity) mLocalActivityManager.getActivity("tid1");
+              t1.getBinding().getTab1().setd(uri);
+            }
+
     }
 }

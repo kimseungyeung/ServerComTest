@@ -2,6 +2,8 @@ package com.server.servercomtest.Network;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -19,6 +21,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.server.servercomtest.Activity.LoginActivity;
 import com.server.servercomtest.Activity.MainActivity;
 import com.server.servercomtest.Constants;
@@ -122,7 +127,8 @@ public class FireStoreNetwork implements NetworkService {
 //                    });
 
                     Intent intent = new Intent(con,new MainActivity().getClass());
-                    Constants.loginfn=FireStoreNetwork.this;
+                    intent.putExtra("uid",mAuth.getCurrentUser().getUid());
+                   // Constants.loginfn=FireStoreNetwork.this;
                     con.startActivity(intent);
                 } else {
                     // If sign in fails, display a message to the user.
